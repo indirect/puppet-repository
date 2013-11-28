@@ -2,22 +2,18 @@ require 'spec_helper'
 require 'octokit'
 
 describe 'repos_for' do
+  let(:username){ "bob" }
   let(:client){ mock('client') }
-  let(:repos){ %w(cool stuff).map{|n| mock('repo', :full_name => n) } }
+  let(:repos) do
+    %w(cool stuff).map { |n| mock('repo', :full_name => "#{username}/#{n}") }
+  end
 
   before do
     Octokit::Client.expects(:new).with(:access_token => '123abc').returns(client)
     client.expects(:auto_paginate=).with(true)
+    client.expects(:repositories).with(username).returns(repos)
   end
 
-  context 'called with the current github username' do
-    before { client.expects(:repositories).with(nil, :type => "owner").returns(repos) }
-    it { should run.with_params('indirect').and_return(%w(cool stuff)) }
-  end
-
-  context 'called with any other username' do
-    let(:username){ "bob" }
-    before { client.expects(:repositories).with(username).returns(repos) }
-    it { should run.with_params(username).and_return(%w(cool stuff)) }
-  end
+  it { should run.with_params(username).and_return(%w(bob/cool bob/stuff)) }
+  it { should run.with_params(username, "cool").and_return(%w(bob/stuff)) }
 end
