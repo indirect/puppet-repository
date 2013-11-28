@@ -14,6 +14,11 @@ describe 'repos_for' do
     client.expects(:repositories).with(username).returns(repos)
   end
 
-  it { should run.with_params(username).and_return(%w(bob/cool bob/stuff)) }
-  it { should run.with_params(username, "cool").and_return(%w(bob/stuff)) }
+  it "returns repos for the given user" do
+    should run.with_params(username).and_return(%w(bob/cool bob/stuff))
+  end
+
+  it "excludes repos given in additional arguments" do
+    should run.with_params(username, "cool").and_return(%w(bob/stuff))
+  end
 end
