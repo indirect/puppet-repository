@@ -17,7 +17,6 @@ Puppet.newtype :repository do
 
     defaultto :present
 
-
     def retrieve
       provider.query[:ensure]
     end
@@ -80,6 +79,16 @@ Puppet.newtype :repository do
     validate do |value|
       unless value.is_a? Hash
         raise Puppet::Error, "Repository#config must be a Hash"
+      end
+    end
+  end
+
+  newparam :remote do
+    desc "Remotes to add to the checked out repo"
+
+    validate do |value|
+      unless value.is_a? Hash
+        raise Puppet::Error, "Repository#remotes must be a Hash like {name: url}"
       end
     end
   end

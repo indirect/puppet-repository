@@ -5,6 +5,7 @@ define repository::github(
   $protocol = undef,
   $user     = undef,
   $config   = undef,
+  $remote   = undef,
   $extra    = undef,
   $force    = undef
 ) {
@@ -14,6 +15,7 @@ define repository::github(
     protocol => $protocol,
     user => $user,
     config => $config,
+    remote => $remote,
     extra => $extra,
     force => $force
   })

@@ -44,6 +44,7 @@ Puppet::Type.type(:repository).provide :git do
       command(:git),
       "clone",
       friendly_config,
+      friendly_remotes,
       friendly_extra,
       friendly_source,
       friendly_path
@@ -114,6 +115,16 @@ Puppet::Type.type(:repository).provide :git do
     @friendly_config ||= Array.new.tap do |a|
       @resource[:config].each do |setting, value|
         a << "-c #{setting}=#{value}"
+      end
+    end.join(' ').strip
+  end
+
+  def friendly_remote
+    return if @resource[:remote].nil?
+    @friendly_remote ||= Array.new.tap do |a|
+      @resource[:remote].each do |name, source|
+        a << "-c remote.#{name}.url=#{expand_source(source)}"
+        a << "-c remote.#{name}.fetch=+refs/heads/*:refs/remotes/origin/*"
       end
     end.join(' ').strip
   end
